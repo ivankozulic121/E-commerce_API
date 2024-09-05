@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { CartEntity } from 'src/cart/CartEntity';
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne } from 'typeorm';
 
 
 @Entity('users')
@@ -20,6 +21,9 @@ export class UserEntity {
 
     @Column()
     password: string;
+
+    @OneToOne( () => CartEntity, cart => cart.user)
+    cart: CartEntity;
     
     
 
