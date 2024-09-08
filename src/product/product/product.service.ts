@@ -2,6 +2,7 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { ProductEntity } from './product.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { UserEntity } from 'src/user/user/user.entity';
 
 @Injectable()
 export class ProductService {
@@ -23,7 +24,7 @@ export class ProductService {
         return await this.repo.delete({id});
     }
 
-    async updateStockStatus ( id: number) {
+    async updateStockCount ( id: number) {
 
         try {
             const product = await this.repo.findOneBy({id});

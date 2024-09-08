@@ -1,6 +1,7 @@
 import { PrimaryGeneratedColumn, Column, Entity, OneToMany, OneToOne } from 'typeorm';
 import { ProductEntity } from 'src/product/product/product.entity';
 import { UserEntity } from 'src/user/user/user.entity';
+import { CartItemEntity } from 'src/cartItem/cartItemEntity';
 
 @Entity()
 
@@ -15,8 +16,8 @@ export class CartEntity {
     @Column()
     status: ShoppingCartStatus;
 
-    @OneToMany(() => ProductEntity, products => products.cart, {eager:true})
-    products:  ProductEntity[]
+    @OneToMany(() => CartItemEntity, items => items.cart, {eager:true})
+    items:  CartItemEntity[];
 
 
 

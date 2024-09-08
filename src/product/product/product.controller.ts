@@ -30,7 +30,7 @@ getProductById(@Param('id') id:number) {
 
 @Patch(':id')
 
-updateStockStatus(@Param('barcode') id:number){
-    return this.productService.updateStockStatus(id);
+updateStockCount(@Param('barcode') id:number){
+    return this.productService.updateStockCount(id);
 }
 }

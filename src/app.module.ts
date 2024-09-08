@@ -6,6 +6,10 @@ import { UserEntity } from './user/user/user.entity';
 import { ProductEntity } from './product/product/product.entity';
 import { ProductModule } from './product/product/product.module';
 import { AuthModule } from './auth/auth/auth.module';
+import { CartEntity } from './cart/CartEntity';
+import { CartItemEntity } from './cartItem/cartItemEntity';
+import { CartItemModule } from './cartItem/cart-item.module';
+import { CartModule } from './cart/cart.module';
 
 @Module({
   imports: [TypeOrmModule.forRoot({
@@ -15,9 +19,9 @@ import { AuthModule } from './auth/auth/auth.module';
     username: 'root',
     password: '',
     database: 'e_commerce',
-    entities: [UserEntity, ProductEntity],
+    entities: [UserEntity, ProductEntity, CartEntity, CartItemEntity],
     synchronize: true
-  }), ProductModule, AuthModule],
+  }), ProductModule, AuthModule, CartItemModule, CartModule],
   controllers: [AppController],
   providers: [AppService],
 })

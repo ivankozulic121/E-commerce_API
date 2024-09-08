@@ -27,8 +27,6 @@ export class ProductEntity {
     @Column()
     stock_count: number;
 
-    @ManyToOne(() => CartEntity, cart => cart.products , { eager:false })
-    cart: CartEntity;
 
 
     
