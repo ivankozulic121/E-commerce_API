@@ -1,4 +1,4 @@
-import { Controller, Patch, Body, Param } from '@nestjs/common';
+import { Controller, Patch, Body, Param, Get } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProductEntity } from 'src/product/product/product.entity';
 import { UserEntity } from 'src/user/user/user.entity';
@@ -11,12 +11,11 @@ export class CartController {
 
     constructor( @InjectRepository(ProductEntity) private productRepo: Repository<ProductEntity>, private cartService: CartService){}
 
+@Get()
 
-   // @Patch(':id')
+getAllCarts(){
 
-    /*addToCart (@Body('productID') productID: number, @Param('id') cartID: number, @User() user: UserEntity) {
-
-        return this.cartService.addToCart( productID,cartID, user );
-    }*/
+        return this.cartService.getAllCarts();
 
     }
+}

@@ -4,11 +4,13 @@ import { CartEntity } from './CartEntity';
 import { ProductModule } from 'src/product/product/product.module';
 import { UserEntity } from 'src/user/user/user.entity';
 import { ProductEntity } from 'src/product/product/product.entity';
+import { CartService } from './cart.service';
+import { CartController } from './cart.controller';
 
 @Module({
     imports: [TypeOrmModule.forFeature([CartEntity, UserEntity, ProductEntity]),
     ProductModule],
-    providers: [],
-    controllers: []
+    providers: [CartService],
+    controllers: [CartController]
 })
 export class CartModule {}

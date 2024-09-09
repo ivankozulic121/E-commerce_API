@@ -10,6 +10,9 @@ import { CartEntity } from './cart/CartEntity';
 import { CartItemEntity } from './cartItem/cartItemEntity';
 import { CartItemModule } from './cartItem/cart-item.module';
 import { CartModule } from './cart/cart.module';
+import { StripeModule } from './stripe/stripe.module';
+import { ConfigModule } from '@nestjs/config';
+import { StripeService } from './stripe/stripe.service';
 
 @Module({
   imports: [TypeOrmModule.forRoot({
@@ -21,8 +24,13 @@ import { CartModule } from './cart/cart.module';
     database: 'e_commerce',
     entities: [UserEntity, ProductEntity, CartEntity, CartItemEntity],
     synchronize: true
-  }), ProductModule, AuthModule, CartItemModule, CartModule],
+  }), ProductModule, AuthModule, CartItemModule, CartModule, StripeModule,
+  ConfigModule.forRoot({
+    isGlobal: true,
+    envFilePath: '.env'
+  })
+],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, StripeService],
 })
 export class AppModule {}

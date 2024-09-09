@@ -9,6 +9,7 @@ import { CartModule } from 'src/cart/cart.module';
 import { AuthModule } from 'src/auth/auth/auth.module';
 import { ProductModule } from 'src/product/product/product.module';
 import { ProductEntity } from 'src/product/product/product.entity';
+//import { StripeModule } from './stripe/stripe.module';
 
 @Module({
   imports:[TypeOrmModule.forFeature([CartItemEntity, CartEntity, ProductEntity]),PassportModule, CartModule, AuthModule, ProductModule],

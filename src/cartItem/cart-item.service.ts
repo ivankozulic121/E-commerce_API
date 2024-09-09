@@ -15,6 +15,7 @@ export class CartItemService {
   @InjectRepository(ProductEntity) private productRepo: Repository<ProductEntity>
 ){}
 
+
   
 async addItemToCart( productID: number, user: UserEntity): Promise<CartItemEntity | null>{
     // ovo pozivamo jer se product mora cartItem-u dodijeliti kao entitet, ne moze prema id-u
@@ -26,40 +27,40 @@ async addItemToCart( productID: number, user: UserEntity): Promise<CartItemEntit
         cart.user = user;
         cart.status = ShoppingCartStatus.PENDING;
         cart.items = [];
-        await this.cartRepo.create(cart);
-        await this.cartRepo.save(cart); //ovdje smo sacuvali a, tek nakon toga cartItemu dodijelili cart, pa je vjerovatno zbog toga niz products prazan
+        await this.cartRepo.save(cart);
 
+        let newItem: CartItemEntity = new CartItemEntity();
+        newItem.product = product;
+        newItem.cart = cart;
+        newItem.quantity = 1;
+        //cart.items.push(newItem);
+        console.log(cart.items);
+        return await this.itemRepo.save(newItem);
 
-    }
-    //await this.cartRepo.save(cart); // sad bi vjerovatno trebalo da cart ima cartItem u products nizu kada se izvrsi request
-
-      let itemExists = await this.itemRepo.findOne({where: {product:{id: productID}}}) // nece postojati u cartu koji si tek napravio
-   
-       
-    if (itemExists) {
-
-        itemExists.quantity = itemExists.quantity + 1;
-        return await this.itemRepo.save(itemExists);
 
     }
 
     else {
-      const item: CartItemEntity = new CartItemEntity();
-      item.product = product;
-      item.cart = cart;
-      item.quantity = 1;
-      console.log(cart.items);
-      await this.cartRepo.save(cart);
-      return await this.itemRepo.save(item);
+      let itemExists = await this.itemRepo.findOne({where: {cart: {id: cart.id}, product:{id: productID}}})
 
+      if(itemExists) {
+        itemExists.quantity = itemExists.quantity + 1;
+        return await this.itemRepo.save(itemExists);
+      }
+
+      else{
+        let newItem: CartItemEntity = new CartItemEntity();
+        newItem.product = product;
+        newItem.cart = cart;
+        newItem.quantity = 1;
+        //cart.items.push(newItem) // da bi se vratio odgovarajuci response jer ga vjerovatno ne cita direktno iz baze
+        console.log(cart.items);
+        return await this.itemRepo.save(newItem);
+      }
     }
-    
+   
 }
 
-async itemExistsinCart(cartID: number, productID: number): Promise<CartItemEntity | null>{
-  let itemExists = await this.itemRepo.findOne({where: {cart: {id: cartID}, product:{id: productID}}})
-  return itemExists;
-}
 
   findAll() {
     return `This action returns all cartItem`;

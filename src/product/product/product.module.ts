@@ -9,7 +9,7 @@ import { AuthModule } from 'src/auth/auth/auth.module';
 
 @Module({
     imports:[TypeOrmModule.forFeature([ProductEntity, UserEntity]),
-AuthModule],
+AuthModule, PassportModule],
     controllers:[ProductController],
     providers: [ProductService],
 })
