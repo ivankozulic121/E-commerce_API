@@ -1,4 +1,4 @@
-import { Controller, Body, Post } from '@nestjs/common';
+import { Controller, Body, Post, Req, Res,Get } from '@nestjs/common';
 import { StripeService } from './stripe.service';
 
 @Controller('stripe')
@@ -12,10 +12,22 @@ export class StripeController {
 
         try {
             const session = await this.stripeService.createCheckoutSession(body.items);
-            return { id: session.id };
+            return { session: session.url };
         }
         catch(error) {
             return { error: error.message}
         }
+    }
+
+    @Post('webhook')
+    
+    async handleWebhook(@Req() req: Request, @Res() res: Response) {
+        return this.stripeService.handleWebhook(req, res);
+}
+
+    @Get('success')
+
+    async paymentSuccessfull() {
+        return 'Payment Successfull. Thank you and come again'
     }
 }

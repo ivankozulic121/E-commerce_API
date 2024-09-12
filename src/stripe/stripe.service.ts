@@ -1,6 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import Stripe from 'stripe';
+import { Request, Response } from '@nestjs/common';
+import { json } from 'body-parser';
+import * as rawBody from 'raw-body';
 
 @Injectable()
 export class StripeService {
@@ -30,10 +33,32 @@ export class StripeService {
             quantity: item.quantity,
           })),
           mode: 'payment',
-          success_url: 'http://localhost:3000/success',
-          cancel_url: 'http://localhost:3000/cancel',
+          success_url: 'http://localhost:3000/api/stripe/success',
+          cancel_url: 'http://localhost:3000/api/stripe/cancel',
         });
     
         return session;
       }
+      
+      async handleWebhook(req: Request, res: Response) {
+        const sig = req.headers['stripe-signature'];
+  let event;
+
+  try {
+    event = this.stripe.webhooks.constructEvent(req['rawBody'], sig, process.env.WEBHOOK_SECRET_KEY);
+    console.log('Webhook event received:', event);
+  } catch (err) {
+    console.log('WEBHOOK ERROR!')
+    throw new BadRequestException(`Webhook Error: ${err.message}`);
+  }
+
+  if (event.type === 'checkout.session.completed') {
+    const session = event.data.object;
+    // Handle successful payment here (e.g., update order status)
+  }
+
+  return ({ received: true });
+      }
+
+
 }
