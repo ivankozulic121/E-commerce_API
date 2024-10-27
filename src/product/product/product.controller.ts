@@ -16,8 +16,9 @@ export class ProductController {
 @UseGuards(AuthGuard())
 
 @Get()
- /*async*/ getAllProducts()/* : Promise<ProductEntity[]>*/ {
+ /*async*/ getAllProducts(@Req() request:Request)/* : Promise<ProductEntity[]>*/ {
     
+    const paks = request.body
     return this.productService.getAllProducts();
 }
 

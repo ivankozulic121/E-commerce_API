@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, OnModuleInit } from '@nestjs/common';
+import { BadRequestException, Injectable, OnModuleInit, RawBodyRequest, Req } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import Stripe from 'stripe';
 import { Request, Response } from '@nestjs/common';
@@ -40,19 +40,25 @@ export class StripeService {
         return session;
       }
       
-      async handleWebhook(req: Request, res: Response) {
+      async handleWebhook( req: RawBodyRequest<Request>, res: Response) {
+        //const bodyString = req.body;
+        //console.log("RAW BODY: " + req.rawBody);
         const sig = req.headers['stripe-signature'];
+        //console.log( "BODY: " + bodyString);
+        //console.log("SIG: "+ sig);
   let event;
 
   try {
-    event = this.stripe.webhooks.constructEvent(req['rawBody'], sig, process.env.WEBHOOK_SECRET_KEY);
+    event = this.stripe.webhooks.constructEvent(req.rawBody, sig, process.env.WEBHOOK_SECRET_KEY);
     console.log('Webhook event received:', event);
   } catch (err) {
-    console.log('WEBHOOK ERROR!')
+    console.log('WEBHOOK ERROR!' + err);
     throw new BadRequestException(`Webhook Error: ${err.message}`);
+   
   }
 
   if (event.type === 'checkout.session.completed') {
+    console.log("WEBHOOK!");
     const session = event.data.object;
     // Handle successful payment here (e.g., update order status)
   }
