@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { LoginUserDTO } from 'src/user/user/loginUserDTO';
 import { JwtService } from '@nestjs/jwt';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -14,13 +15,14 @@ private jwtService: JwtService){}
  async signUp(regDTO: RegisterUserDTO) : Promise<UserEntity> {
 
     const {first_name, last_name, username, password} = regDTO
-
+    const hashedPassword = await bcrypt.hash(password,10);
+    
     const user: UserEntity = new UserEntity();
 
     user.first_name = first_name;
     user.last_name = last_name;
     user.username = username;
-    user.password = password;
+    user.password = hashedPassword;
 
     await this.repo.create(user);
 
@@ -46,8 +48,11 @@ async signIn(loginDTO: LoginUserDTO) {
 
         throw new UnauthorizedException('Invalid credentials')
     }
+    const isPasswordMatching = await bcrypt.compare(password, user.password);
+    if (!isPasswordMatching) {
+        throw new UnauthorizedException('Invalid credentials');
+    }
 
-    if (password == user.password){
 
         //const payload =  { sub:user.id, username: user.username}
         const payload = { username }
@@ -55,9 +60,8 @@ async signIn(loginDTO: LoginUserDTO) {
         return {token: jwtoken}
         
 
-    }
     
-
+    
 }
 
 }
