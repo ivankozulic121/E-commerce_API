@@ -14,9 +14,19 @@ export class CartItemEntity {
     @ManyToOne(( ) => ProductEntity)
     product: ProductEntity
 
-    @ManyToOne(() => CartEntity, cart => cart.items )
+    @ManyToOne(() => CartEntity, (cart) => cart.items  )
     cart: CartEntity
 
     @Column()
     quantity: number;
+
+    @Column()
+    name: string;
+
+    @Column({type: 'decimal', precision:10, scale:2})
+    price: number;
+
+    @Column({ nullable: true})
+    productID:number;
 }   
+//productID: number, name: string; price: number; quantity: number

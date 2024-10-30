@@ -12,7 +12,8 @@ import { ProductEntity } from 'src/product/product/product.entity';
 //import { StripeModule } from './stripe/stripe.module';
 
 @Module({
-  imports:[TypeOrmModule.forFeature([CartItemEntity, CartEntity, ProductEntity]),PassportModule, CartModule, AuthModule, ProductModule],
+  imports:[TypeOrmModule.forFeature([CartItemEntity, CartEntity, ProductEntity]),
+   CartModule, AuthModule, ProductModule],
   controllers: [CartItemController],
   providers: [CartItemService],
 })

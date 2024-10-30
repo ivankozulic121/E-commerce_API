@@ -21,6 +21,6 @@ JwtModule.register({
 })],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy],
-  exports: [PassportModule]
+  exports: [PassportModule,JwtStrategy]
 })
 export class AuthModule {}

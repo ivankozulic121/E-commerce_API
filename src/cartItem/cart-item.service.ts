@@ -33,6 +33,9 @@ async addItemToCart( productID: number, user: UserEntity): Promise<CartItemEntit
         newItem.product = product;
         newItem.cart = cart;
         newItem.quantity = 1;
+        newItem.name = product.product_name;
+        newItem.price = product.price;
+        newItem.productID = product.id;
         //cart.items.push(newItem);
         console.log(cart.items);
         return await this.itemRepo.save(newItem);
@@ -53,12 +56,19 @@ async addItemToCart( productID: number, user: UserEntity): Promise<CartItemEntit
         newItem.product = product;
         newItem.cart = cart;
         newItem.quantity = 1;
+        newItem.name = product.product_name;
+        newItem.price = product.price;
+        newItem.productID = product.id;
         //cart.items.push(newItem) // da bi se vratio odgovarajuci response jer ga vjerovatno ne cita direktno iz baze
         console.log(cart.items);
         return await this.itemRepo.save(newItem);
       }
     }
    
+}
+
+async removeAllItems() {
+  return await this.itemRepo.delete({});
 }
 
 

@@ -1,5 +1,6 @@
 import { CartEntity } from 'src/cart/CartEntity';
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne } from 'typeorm';
+import { OrderEntity } from 'src/order/orderEntity';
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne, OneToMany } from 'typeorm';
 
 
 @Entity('users')
@@ -22,9 +23,11 @@ export class UserEntity {
     @Column()
     password: string;
 
-    @OneToOne( () => CartEntity, cart => cart.user)
-    cart: CartEntity;
+    @OneToMany(() => CartEntity, (cart) => cart.user)
+    carts: CartEntity[];
     
+    @OneToMany(()=> OrderEntity, order => order.user, { eager: true } )
+    order: OrderEntity[]
     
 
 }

@@ -7,10 +7,11 @@ import { UserEntity } from 'src/user/user/user.entity';
 import { AuthGuard } from '@nestjs/passport';
 
 @Controller('cart-item')
+@UseGuards(AuthGuard())
 export class CartItemController {
   constructor(private readonly cartItemService: CartItemService) {}
 
-  @UseGuards(AuthGuard())
+  
   
   @Put('addItemToCart')
   addItemToCart( @Body('productID') productID: number, @User() user: UserEntity){
@@ -31,6 +32,10 @@ export class CartItemController {
   update(@Param('id') id: string, @Body() updateCartItemDto: UpdateCartItemDto) {
     return this.cartItemService.update(+id, updateCartItemDto);
   }*/
+ @Delete()
+ async removeAllItems(){
+    return this.cartItemService.removeAllItems();
+ }
 
   @Delete(':id')
   remove(@Param('id') id: string) {

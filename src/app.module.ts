@@ -14,6 +14,8 @@ import { CartModule } from './cart/cart.module';
 import { StripeModule } from './stripe/stripe.module';
 import { ConfigModule } from '@nestjs/config';
 import { StripeService } from './stripe/stripe.service';
+import { OrderEntity } from './order/orderEntity';
+import { OrderModule } from './order/order.module';
 
 @Module({
   imports: [TypeOrmModule.forRoot({
@@ -23,15 +25,15 @@ import { StripeService } from './stripe/stripe.service';
     username: 'postgres',
     password: 'arohadrix',
     database: 'e_commerce',
-    entities: [UserEntity, ProductEntity, CartEntity, CartItemEntity],
+    entities: [UserEntity, ProductEntity, CartEntity, CartItemEntity, OrderEntity],
     synchronize: true
-  }), ProductModule, AuthModule, CartItemModule, CartModule, StripeModule,
+  }), ProductModule, AuthModule, CartItemModule, CartModule, StripeModule,OrderModule,
   ConfigModule.forRoot({
     isGlobal: true,
     envFilePath: '.env'
   })
 ],
   controllers: [AppController],
-  providers: [AppService, StripeService],
+  providers: [AppService],
 })
 export class AppModule {}

@@ -6,9 +6,11 @@ import * as express from 'express';
 
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, {rawBody: true} );
+  const app = await NestFactory.create(AppModule, {rawBody: true});
   app.useGlobalPipes(new ValidationPipe());
   app.setGlobalPrefix('api');
+
+  app.enableCors();
 
   
   await app.listen(3000);
