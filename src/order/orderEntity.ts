@@ -1,3 +1,4 @@
+import { CartItemEntity } from "src/cartItem/cartItemEntity";
 import { ProductEntity } from "src/product/product/product.entity";
 import { UserEntity } from "src/user/user/user.entity";
 import { PrimaryGeneratedColumn, Entity, Column, CreateDateColumn, OneToMany, ManyToOne, ManyToMany, JoinTable } from "typeorm";
@@ -13,9 +14,9 @@ export class OrderEntity {
     @ManyToOne(()=> UserEntity, user => user.order, {eager:false})
     user: UserEntity;
 
-    @ManyToMany(() => ProductEntity)
-    @JoinTable() // This creates a join table to manage the relationship
-    products: ProductEntity[];
+    @OneToMany(() => CartItemEntity, (items) => items.cart)
+    //@JoinTable() // This creates a join table to manage the relationship
+    items: CartItemEntity[];
 
     @Column('decimal')
     totalAmount: number;

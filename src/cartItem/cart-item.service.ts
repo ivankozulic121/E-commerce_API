@@ -6,6 +6,8 @@ import { CartEntity, ShoppingCartStatus } from 'src/cart/CartEntity';
 import { User } from 'src/user/user/user.decorator';
 import { UserEntity } from 'src/user/user/user.entity';
 import { ProductEntity } from 'src/product/product/product.entity';
+import { Not } from 'typeorm';
+
 
 @Injectable()
 export class CartItemService {
@@ -21,7 +23,7 @@ async addItemToCart( productID: number, user: UserEntity): Promise<CartItemEntit
     // ovo pozivamo jer se product mora cartItem-u dodijeliti kao entitet, ne moze prema id-u
     const product = await this.productRepo.findOne({where: {id: productID}}) // nadji proizvod u b
         
-    let cart = await this.cartRepo.findOne({where: { user: {id: user.id}}}); // nadji cart - moguca vrijednost null 
+    let cart = await this.cartRepo.findOne({where: { user: {id: user.id}, status: Not(ShoppingCartStatus.PURCHASED)}}); // nadji cart - moguca vrijednost null 
     if (!cart) {
         let cart: CartEntity = new CartEntity();
         cart.user = user;

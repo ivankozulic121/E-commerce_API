@@ -1,6 +1,7 @@
 /* eslint-disable prettier/prettier */
 //import { Exclude } from 'class-transformer';
 import { CartEntity } from 'src/cart/CartEntity';
+import { OrderEntity } from 'src/order/orderEntity';
 import { ProductEntity } from 'src/product/product/product.entity';
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne } from 'typeorm';
 
@@ -28,5 +29,8 @@ export class CartItemEntity {
 
     @Column({ nullable: true})
     productID:number;
+
+    @ManyToOne(() => OrderEntity, order => order.items)
+    order: OrderEntity
 }   
 //productID: number, name: string; price: number; quantity: number

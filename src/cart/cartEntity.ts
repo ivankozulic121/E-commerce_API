@@ -17,7 +17,7 @@ export class CartEntity {
     @Column()
     status: ShoppingCartStatus;
 
-    @OneToMany(() => CartItemEntity, items => items.cart, {eager:true} )
+    @OneToMany(() => CartItemEntity, items => items.cart, {eager:true, cascade: true} )
     items:  CartItemEntity[];
 
 
