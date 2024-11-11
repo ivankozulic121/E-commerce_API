@@ -1,4 +1,4 @@
-import { Inject, Injectable, InternalServerErrorException } from '@nestjs/common';
+import { Inject, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CartItemEntity } from './cartItemEntity';
 import { Repository } from 'typeorm';
@@ -7,6 +7,7 @@ import { User } from 'src/user/user/user.decorator';
 import { UserEntity } from 'src/user/user/user.entity';
 import { ProductEntity } from 'src/product/product/product.entity';
 import { Not } from 'typeorm';
+import { CartService } from 'src/cart/cart.service';
 
 
 @Injectable()
@@ -14,7 +15,8 @@ export class CartItemService {
 
   constructor(@InjectRepository(CartItemEntity) private itemRepo: Repository<CartItemEntity>, 
   @InjectRepository(CartEntity) private cartRepo: Repository<CartEntity>,
-  @InjectRepository(ProductEntity) private productRepo: Repository<ProductEntity>
+  @InjectRepository(ProductEntity) private productRepo: Repository<ProductEntity>,
+  private cartService: CartService
 ){}
 
 
@@ -25,21 +27,18 @@ async addItemToCart( productID: number, user: UserEntity): Promise<CartItemEntit
         
     let cart = await this.cartRepo.findOne({where: { user: {id: user.id}, status: Not(ShoppingCartStatus.PURCHASED)}}); // nadji cart - moguca vrijednost null 
     if (!cart) {
-        let cart: CartEntity = new CartEntity();
-        cart.user = user;
-        cart.status = ShoppingCartStatus.PENDING;
-        cart.items = [];
-        await this.cartRepo.save(cart);
+        
+        let cart = this.cartService.createNewCart(user);
 
         let newItem: CartItemEntity = new CartItemEntity();
         newItem.product = product;
-        newItem.cart = cart;
+        newItem.cart = await cart;
         newItem.quantity = 1;
         newItem.name = product.product_name;
         newItem.price = product.price;
         newItem.productID = product.id;
         //cart.items.push(newItem);
-        console.log(cart.items);
+        console.log( newItem.cart.items);
         return await this.itemRepo.save(newItem);
 
 
@@ -86,7 +85,25 @@ async removeAllItems() {
     return `This action updates a #${id} cartItem`;
   }*/
 
-  remove(id: number) {
-    return `This action removes a #${id} cartItem`;
+ async removeItemFromCart(id: number) {
+    
+    const item = await this.itemRepo.findOneBy({id});
+    console.log(item);
+
+    if( item.quantity > 1) {
+
+      item.quantity -= 1;
+      return await this.itemRepo.save(item);
+    }
+
+    else{
+      const result = await this.itemRepo.delete(item);
+    if ( result.affected == 0){
+      throw new NotFoundException('Item not deleted!');
+    }
+    else {
+      return { deleted: true}
+    }
+  }
   }
 }

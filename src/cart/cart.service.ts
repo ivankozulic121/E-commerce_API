@@ -8,6 +8,7 @@ import { UserEntity } from 'src/user/user/user.entity';
 //import { UserEntity } from 'src/user/user/user.entity';
 import { Repository } from 'typeorm';
 import { CartEntity } from './CartEntity';
+import { ShoppingCartStatus } from './CartEntity';
 
 @Injectable()
 export class CartService {
@@ -17,4 +18,14 @@ export class CartService {
     async getAllCarts(): Promise<CartEntity[]>{
         return await this.cartRepo.find();
     }
+
+async createNewCart(user: UserEntity) {
+    
+    let cart: CartEntity = new CartEntity();
+    cart.user = user;
+    cart.status = ShoppingCartStatus.PENDING;
+    cart.items = [];
+    return await this.cartRepo.save(cart);
+}
+
 }

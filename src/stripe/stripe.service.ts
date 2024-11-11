@@ -72,7 +72,7 @@ export class StripeService {
   try {
     event = this.stripe.webhooks.constructEvent(req.rawBody, sig, process.env.WEBHOOK_SECRET_KEY);
     console.log('Webhook event received:', event);
-    
+
   } catch (err) {
     console.log('WEBHOOK ERROR!' + err);
     throw new BadRequestException(`Webhook Error: ${err.message}`);
@@ -90,25 +90,28 @@ export class StripeService {
   
     
     // Handle successful payment here (e.g., update order status)
-    let order: OrderEntity = new OrderEntity();
+    
 
     for (const item of parsedItems) {
+
       const product: ProductEntity =  await this.productRepo.findOne({where: { id: item.productID}});
       product.stock_count = product.stock_count - item.quantity;
       await this.productRepo.save(product);
-      item.order = order
-
-    }
-    order.user = session.metadata.userID;
-    order.totalAmount = session.amount_total;
-
+}
     
-    await this.orderRepo.save(order);
-    //these two below need to be done
+//these two below need to be done
     //await this.itemRepo.clear()
    const cart = await this.cartRepo.findOne({where: {id: session.metadata.cartID}});
    cart.status = ShoppingCartStatus.PURCHASED;
    await this.cartRepo.save(cart);
+
+   let order: OrderEntity = new OrderEntity()
+
+   order.user = session.metadata.userID;
+   order.totalAmount = session.amount_total;
+   order.cart = cart;
+   await this.orderRepo.save(order);
+
   }
 
   return ({ received: true });

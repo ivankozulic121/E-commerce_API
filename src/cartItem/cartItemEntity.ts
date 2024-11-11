@@ -15,7 +15,7 @@ export class CartItemEntity {
     @ManyToOne(( ) => ProductEntity)
     product: ProductEntity
 
-    @ManyToOne(() => CartEntity, (cart) => cart.items  )
+    @ManyToOne(() => CartEntity, (cart) => cart.items, {eager:false, onDelete:'CASCADE'}  )
     cart: CartEntity
 
     @Column()
@@ -30,7 +30,6 @@ export class CartItemEntity {
     @Column({ nullable: true})
     productID:number;
 
-    @ManyToOne(() => OrderEntity, order => order.items)
-    order: OrderEntity
-}   
 //productID: number, name: string; price: number; quantity: number
+
+}

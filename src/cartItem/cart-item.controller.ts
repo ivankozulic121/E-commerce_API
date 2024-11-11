@@ -38,7 +38,7 @@ export class CartItemController {
  }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.cartItemService.remove(+id);
+  removeItemFromCart(@Param('id') id: string) {
+    return this.cartItemService.removeItemFromCart(+id);
   }
 }
